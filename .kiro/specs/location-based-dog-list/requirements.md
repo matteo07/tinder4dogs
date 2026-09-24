@@ -12,9 +12,9 @@ Today `GET /api/matches/{id}` returns every other scorable dog ordered by compat
   - Filtering the ranked list to candidates within the radius of the subject dog's stored location.
   - Showing each candidate's distance from the subject dog, rounded to the nearest kilometre.
   - Tolerating candidates with missing or invalid stored location by silently skipping them.
+  - Updating a stored location on an existing dog profile; location is mandatory and cannot be removed.
 - **Out of scope**:
   - Any consent mechanism for geolocation (PRD NFR-01 / nLPD/GDPR) — deferred to a later spec.
-  - Updating or deleting a dog's location (no update/delete endpoints exist today).
   - Geocoding: the system accepts coordinates, not addresses, and does not convert between them.
   - Filters beyond location (PRD F-06) and any client-side presentation.
 - **Adjacent expectations**:
@@ -32,7 +32,7 @@ Today `GET /api/matches/{id}` returns every other scorable dog ordered by compat
 1. When a client creates a dog profile with a location, the tinder4dogs service shall store that location with the profile and return it in the created profile response.
 2. When a client reads an existing dog profile, the tinder4dogs service shall return the stored location of that profile, or its absence, exactly as stored.
 3. If a client creates a dog profile with a latitude outside [-90, 90] or a longitude outside [-180, 180], the tinder4dogs service shall reject the request with a client error and store no dog.
-4. When a client creates a dog profile without a location, the tinder4dogs service shall create the profile and store it as having no location.
+4. If a client creates a dog profile without a location, the tinder4dogs service shall reject the request with a client error and store no dog.
 
 ### Requirement 2: Radius parameter on the ranked-candidates list
 
@@ -65,7 +65,18 @@ Today `GET /api/matches/{id}` returns every other scorable dog ordered by compat
 1. When the tinder4dogs service returns a ranked-candidates list, it shall include for each candidate its distance from the subject dog in kilometres, rounded to the nearest whole kilometre.
 2. The tinder4dogs service shall not include any candidate's exact stored coordinates in a ranked-candidates list response.
 
-### Requirement 5: Pairwise lookup unchanged
+### Requirement 5: Updating a dog's location
+
+**Objective:** As a dog owner, I want to change my dog's stored location, so that suggestions follow my dog when we move.
+
+#### Acceptance Criteria
+
+1. When a client updates the location of an existing dog, the tinder4dogs service shall replace the previously stored location with the new one and return the updated profile.
+2. If a client updates the location of a dog that does not exist, the tinder4dogs service shall return a 404.
+3. If a client updates a dog's location with a latitude outside [-90, 90] or a longitude outside [-180, 180], the tinder4dogs service shall reject the request with a client error and keep the previously stored location unchanged.
+4. The tinder4dogs service shall not provide any way to remove a dog's stored location.
+
+### Requirement 6: Pairwise lookup unchanged
 
 **Objective:** As a dog owner checking two specific known dogs, I want their compatibility answer to keep today's behaviour, so that existing clients do not break.
 
