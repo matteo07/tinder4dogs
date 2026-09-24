@@ -1,17 +1,17 @@
 {
   "feature_name": "location-based-dog-list",
   "created_at": "2026-09-24T14:22:06Z",
-  "updated_at": "2026-09-24T15:40:00Z",
+  "updated_at": "2026-09-24T16:10:00Z",
   "language": "en",
-  "phase": "requirements-generated",
+  "phase": "design-generated",
   "approvals": {
     "requirements": {
       "generated": true,
-      "approved": false
+      "approved": true
     },
     "design": {
-      "generated": false,
-      "approved": false
+      "generated": true,
+      "approved": true
     },
     "tasks": {
       "generated": false,
